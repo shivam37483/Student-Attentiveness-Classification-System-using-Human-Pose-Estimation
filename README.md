@@ -1,1 +1,1 @@
-# shivam37483-Student-Attentiveness-Classification-System-using-Human-Pose-Estimation
+# Student Attentiveness Classification System using Human Pose Estimation

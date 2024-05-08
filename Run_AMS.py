@@ -16,7 +16,7 @@ codeThread.start() #starting code timer
 # parameters for loading data and images
 emotion_model_path = 'training_output/fer2013.hdf5' #storing expression model path in var
 emotion_labels = get_labels()#loading labels
-predictor = dlib.shape_predictor("shape_predictor_68_face_landmarks.dat")# init dlib's face detector (HOG-based)
+predictor = yolov4.shape_predictor("shape_predictor_68_face_landmarks.dat")# init yolov4's face detector (HOG-based)
 
 
 # hyper-parameters for bounding boxes shape
@@ -59,13 +59,13 @@ while True:
     gray_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2GRAY) #changing the image into gray scale for better results
     rgb_image = cv2.cvtColor(bgr_image, cv2.COLOR_BGR2RGB)
     #for face_coordinates in faces:
-    #Dlib
-    faces, score, idx = detect_faces_dlib(face_detection,gray_image)# passsing face model and image to get face coordinates
+  
+    faces, score, idx = detect_faces_yolov4(face_detection,gray_image)# passsing face model and image to get face coordinates
     for face in faces:
-        face_coordinates = make_face_coordinates_dlib(face)
+        face_coordinates = make_face_coordinates_yolov4(face)
         ID=ID+1
         Sample=Sample+1
-        x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets) # applying dlib offset with our defined offsets to get only face in the image
+        x1, x2, y1, y2 = apply_offsets(face_coordinates, emotion_offsets) # applying yolov4 offset with our defined offsets to get only face in the image
         gray_face = gray_image[y1:y2, x1:x2]# only face in this image
 
         try:
@@ -112,9 +112,7 @@ while True:
 
     imgpts, modelpts, rotate_degree, nose = face_orientation(rgb_image, landmarks) #head pose function.
 
-#----------------------------------------------------------------------------------------------
-#---------------------------->Labeling of Attentive and Unattentive<---------------------------
-#----------------------------------------------------------------------------------------------
+    #Labeling of Attentive and Unattentive
 
     #Emotion labeling
     if emotion_text == 'asking' or emotion_text == 'looking' or emotion_text == 'bowing':
@@ -130,9 +128,8 @@ while True:
     pitch = int(rotate_degree[1])
     yaw = int(rotate_degree[2])
 
-#----------------------------------------------------------------------------------------------
-#---------------------------->Checks of Attentive and Unattentive<---------------------------
-#----------------------------------------------------------------------------------------------
+    #Checks of Attentive and Unattentive
+
     per = 0
     
     if roll<=30 and pitch <=30 and yaw<=25 and roll>=-30 and pitch >=-10 and yaw>=-25:
